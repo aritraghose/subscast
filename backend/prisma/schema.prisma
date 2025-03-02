@@ -12,3 +12,69 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model User {
+  userID              Int               @id @default(autoincrement())
+  email               String            @unique
+  username            String            @unique
+  password            String
+  createdAt           DateTime          @default(now())
+  profile             Profile?
+}
+
+
+model Profile {
+  userID              Int               @id
+  user                User              @relation(fields: [userID], references: [userID], onDelete: Cascade)
+  firstName           String?
+  lastName            String?
+  bio                 String?
+  subscribers         Subscription[]    @relation("Subscriber")
+  subscribedTo        Subscription[]    @relation("SubscribedTo")
+  posts               Post[]            //@relation("Post")
+  comments            Comment[]         //@relation("Comment")
+  upvotes             Post[]            @relation("Upvotes")
+  downvotes           Post[]            @relation("Downvotes")
+}
+
+
+model Subscription {
+  subscriptionID      Int               @id @default(autoincrement())
+  subscriberID        Int
+  subscribedToID      Int
+  subscriber          Profile           @relation("Subscriber", fields: [subscriberID], references: [userID], onDelete: Cascade)
+  subscribedTo        Profile           @relation("SubscribedTo", fields: [subscribedToID], references: [userID], onDelete: Cascade)
+  subscribedAt        DateTime          @default(now())
+
+  @@unique([subscriberID, subscribedToID])
+}
+
+
+
+model Post {
+  postID              Int               @unique @id @default(autoincrement())
+  authorID            Int
+  author              Profile           @relation(fields: [authorID], references: [userID], onDelete: Cascade)
+  title               String
+  content             String            @db.Text
+  createdAt           DateTime          @default(now())
+  upvotes             Profile[]         @relation("Upvotes")
+  downvotes           Profile[]         @relation("Downvotes")
+  comments            Comment[]
+
+  @@index([authorID])
+  @@index([createdAt])
+}
+
+
+model Comment {
+  commentID           Int               @id @default(autoincrement())
+  postID              Int
+  authorID            Int
+  post                Post              @relation(fields: [postID], references: [postID])
+  author              Profile           @relation(fields: [authorID], references: [userID])
+  content             String            @db.Text
+  createdAt           DateTime          @default(now())
+}
+
+
