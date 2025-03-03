@@ -2,14 +2,14 @@
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "backend",
   "main": "src/index.ts",
-  "compatibility_date": "2025-03-01",
+  "compatibility_date": "2025-03-01"
   // "compatibility_flags": [
   //   "nodejs_compat"
   // ],
-  "vars": {
-    "JWT_SECRET": "",
-    "DATABASE_URL": ""
-  }
+  // "vars": {
+  //   "JWT_SECRET": "",
+  //   "DATABASE_URL": "",
+  // },
   // "kv_namespaces": [
   //   {
   //     "binding": "MY_KV_NAMESPACE",
